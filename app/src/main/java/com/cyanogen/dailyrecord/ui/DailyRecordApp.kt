@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -181,7 +180,7 @@ private fun TodayScreen(
         Text("撸管记录", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Text(today.format(dateFormatter), color = MaterialTheme.colorScheme.onSurfaceVariant)
         Spacer(Modifier.weight(.45f))
-        DeerDecoration(Modifier.size(112.dp))
+        DeerDecoration(Modifier.width(180.dp).height(112.dp))
         Spacer(Modifier.height(14.dp))
         Text("今日次数", style = MaterialTheme.typography.titleMedium)
         Text(
@@ -229,43 +228,48 @@ private fun DeerDecoration(modifier: Modifier = Modifier) {
     val detailColor = MaterialTheme.colorScheme.primary
 
     Canvas(modifier = modifier) {
-        val stroke = size.minDimension * .045f
-        val centerX = size.width / 2f
+        val stroke = size.minDimension * .035f
 
-        // Face and ears.
+        // Body, neck and head in side profile.
+        drawOval(
+            color = lineColor.copy(alpha = .13f),
+            topLeft = Offset(size.width * .12f, size.height * .40f),
+            size = androidx.compose.ui.geometry.Size(size.width * .50f, size.height * .32f),
+        )
         drawOval(
             color = lineColor,
-            topLeft = Offset(size.width * .31f, size.height * .30f),
-            size = androidx.compose.ui.geometry.Size(size.width * .38f, size.height * .52f),
+            topLeft = Offset(size.width * .12f, size.height * .40f),
+            size = androidx.compose.ui.geometry.Size(size.width * .50f, size.height * .32f),
             style = Stroke(stroke),
         )
-        drawLine(lineColor, Offset(size.width * .34f, size.height * .39f), Offset(size.width * .18f, size.height * .25f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .18f, size.height * .25f), Offset(size.width * .31f, size.height * .23f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .66f, size.height * .39f), Offset(size.width * .82f, size.height * .25f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .82f, size.height * .25f), Offset(size.width * .69f, size.height * .23f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .56f, size.height * .48f), Offset(size.width * .72f, size.height * .23f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .61f, size.height * .63f), Offset(size.width * .78f, size.height * .34f), stroke, StrokeCap.Round)
+        drawOval(
+            color = lineColor,
+            topLeft = Offset(size.width * .70f, size.height * .19f),
+            size = androidx.compose.ui.geometry.Size(size.width * .19f, size.height * .17f),
+            style = Stroke(stroke),
+        )
+        drawLine(lineColor, Offset(size.width * .87f, size.height * .25f), Offset(size.width * .97f, size.height * .29f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .97f, size.height * .29f), Offset(size.width * .87f, size.height * .33f), stroke, StrokeCap.Round)
 
-        // Simple antlers.
-        listOf(-1f, 1f).forEach { side ->
-            val rootX = centerX + side * size.width * .13f
-            val outerX = centerX + side * size.width * .28f
-            drawLine(lineColor, Offset(rootX, size.height * .31f), Offset(outerX, size.height * .08f), stroke, StrokeCap.Round)
-            drawLine(lineColor, Offset(centerX + side * size.width * .21f, size.height * .17f), Offset(centerX + side * size.width * .34f, size.height * .15f), stroke, StrokeCap.Round)
-            drawLine(lineColor, Offset(centerX + side * size.width * .25f, size.height * .12f), Offset(centerX + side * size.width * .27f, size.height * .02f), stroke, StrokeCap.Round)
+        // Ear, eye and branching antler.
+        drawLine(lineColor, Offset(size.width * .74f, size.height * .22f), Offset(size.width * .66f, size.height * .11f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .66f, size.height * .11f), Offset(size.width * .79f, size.height * .18f), stroke, StrokeCap.Round)
+        drawCircle(detailColor, radius = stroke * .62f, center = Offset(size.width * .83f, size.height * .26f))
+        drawLine(lineColor, Offset(size.width * .75f, size.height * .20f), Offset(size.width * .68f, size.height * .04f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .70f, size.height * .10f), Offset(size.width * .61f, size.height * .04f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .71f, size.height * .11f), Offset(size.width * .76f, size.height * .01f), stroke, StrokeCap.Round)
+
+        // Tail and four slender legs.
+        drawLine(lineColor, Offset(size.width * .14f, size.height * .48f), Offset(size.width * .04f, size.height * .37f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .04f, size.height * .37f), Offset(size.width * .08f, size.height * .53f), stroke, StrokeCap.Round)
+        listOf(.24f, .35f, .51f, .59f).forEachIndexed { index, legX ->
+            val hoofX = legX + if (index % 2 == 0) -.035f else .035f
+            drawLine(lineColor, Offset(size.width * legX, size.height * .68f), Offset(size.width * legX, size.height * .86f), stroke, StrokeCap.Round)
+            drawLine(lineColor, Offset(size.width * legX, size.height * .86f), Offset(size.width * hoofX, size.height * .97f), stroke, StrokeCap.Round)
+            drawLine(lineColor, Offset(size.width * hoofX, size.height * .97f), Offset(size.width * (hoofX + .035f), size.height * .97f), stroke, StrokeCap.Round)
         }
-
-        // Eyes, muzzle and nose.
-        drawCircle(detailColor, radius = stroke * .55f, center = Offset(size.width * .42f, size.height * .52f))
-        drawCircle(detailColor, radius = stroke * .55f, center = Offset(size.width * .58f, size.height * .52f))
-        drawOval(
-            color = lineColor.copy(alpha = .18f),
-            topLeft = Offset(size.width * .39f, size.height * .60f),
-            size = androidx.compose.ui.geometry.Size(size.width * .22f, size.height * .15f),
-        )
-        drawOval(
-            color = detailColor,
-            topLeft = Offset(size.width * .45f, size.height * .64f),
-            size = androidx.compose.ui.geometry.Size(size.width * .10f, size.height * .06f),
-        )
     }
 }
 
@@ -305,6 +309,7 @@ private fun CalendarScreen(
             today = today,
             records = records,
             onSelectDate = { selectedDateText = it.toString() },
+            modifier = Modifier.fillMaxWidth().weight(1f),
         )
     }
 
@@ -328,12 +333,13 @@ private fun CalendarGrid(
     today: LocalDate,
     records: Map<LocalDate, Long>,
     onSelectDate: (LocalDate) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val weekdays = listOf("一", "二", "三", "四", "五", "六", "日")
     val leadingEmpty = month.atDay(1).dayOfWeek.value - 1
     val totalCells = ((leadingEmpty + month.lengthOfMonth() + 6) / 7) * 7
 
-    Column {
+    Column(modifier) {
         Row(Modifier.fillMaxWidth()) {
             weekdays.forEach { day ->
                 Text(
@@ -345,23 +351,25 @@ private fun CalendarGrid(
                 )
             }
         }
-        repeat(totalCells / 7) { week ->
-            Row(Modifier.fillMaxWidth()) {
-                repeat(7) { weekday ->
-                    val index = week * 7 + weekday
-                    val dayNumber = index - leadingEmpty + 1
-                    if (dayNumber in 1..month.lengthOfMonth()) {
-                        val date = month.atDay(dayNumber)
-                        CalendarDay(
-                            date = date,
-                            count = records[date] ?: 0L,
-                            isToday = date == today,
-                            isFuture = date.isAfter(today),
-                            modifier = Modifier.weight(1f),
-                            onClick = { onSelectDate(date) },
-                        )
-                    } else {
-                        Spacer(Modifier.weight(1f).aspectRatio(0.9f))
+        Column(Modifier.fillMaxWidth().weight(1f)) {
+            repeat(totalCells / 7) { week ->
+                Row(Modifier.fillMaxWidth().weight(1f)) {
+                    repeat(7) { weekday ->
+                        val index = week * 7 + weekday
+                        val dayNumber = index - leadingEmpty + 1
+                        if (dayNumber in 1..month.lengthOfMonth()) {
+                            val date = month.atDay(dayNumber)
+                            CalendarDay(
+                                date = date,
+                                count = records[date] ?: 0L,
+                                isToday = date == today,
+                                isFuture = date.isAfter(today),
+                                modifier = Modifier.weight(1f).fillMaxHeight(),
+                                onClick = { onSelectDate(date) },
+                            )
+                        } else {
+                            Spacer(Modifier.weight(1f).fillMaxHeight())
+                        }
                     }
                 }
             }
@@ -383,7 +391,6 @@ private fun CalendarDay(
     else MaterialTheme.colorScheme.onSurface
     Column(
         modifier = modifier
-            .aspectRatio(0.9f)
             .padding(3.dp)
             .clip(RoundedCornerShape(12.dp))
             .background(background)
@@ -393,19 +400,23 @@ private fun CalendarDay(
         verticalArrangement = Arrangement.Center,
     ) {
         Text(date.dayOfMonth.toString(), color = alphaColor, fontWeight = if (isToday) FontWeight.Bold else null)
+        Spacer(Modifier.height(5.dp))
         if (count > 0) {
             Box(
                 modifier = Modifier
+                    .fillMaxWidth(.88f)
+                    .height(28.dp)
                     .clip(RoundedCornerShape(7.dp))
-                    .background(MaterialTheme.colorScheme.tertiaryContainer)
-                    .padding(horizontal = 5.dp, vertical = 2.dp),
+                    .background(MaterialTheme.colorScheme.tertiaryContainer),
+                contentAlignment = Alignment.Center,
             ) {
                 Text(
                     "$count 次",
-                    fontSize = 13.sp,
-                    lineHeight = 15.sp,
+                    fontSize = 14.sp,
+                    lineHeight = 20.sp,
                     fontWeight = FontWeight.Bold,
                     color = if (isFuture) alphaColor else MaterialTheme.colorScheme.onTertiaryContainer,
+                    textAlign = TextAlign.Center,
                     maxLines = 1,
                 )
             }
