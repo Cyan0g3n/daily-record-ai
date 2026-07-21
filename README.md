@@ -1,6 +1,6 @@
-# 每日记录 · AI 制作的 Android 应用
+# 鹿录 · AI 制作的 Android 应用
 
-一款完全离线、注重隐私的 Android 每日计数应用，使用 Kotlin、Jetpack Compose、Room 和 Material 3 构建。
+一款完全离线的 Android 撸管次数记录应用，使用 Kotlin、Jetpack Compose、Room 和 Material 3 构建。
 
 > **AI 制作声明：** 本项目在用户需求指导下，产品设计、界面设计、代码实现、自动化测试、问题修复和 APK 构建均由 **OpenAI Codex AI** 完成。
 

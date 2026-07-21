@@ -61,6 +61,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -177,9 +178,11 @@ private fun TodayScreen(
         modifier = Modifier.fillMaxSize().padding(horizontal = 24.dp, vertical = 28.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("每日记录", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
+        Text("撸管记录", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Text(today.format(dateFormatter), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.weight(.45f))
+        DeerDecoration(Modifier.size(112.dp))
+        Spacer(Modifier.height(14.dp))
         Text("今日次数", style = MaterialTheme.typography.titleMedium)
         Text(
             text = count.toString(),
@@ -198,7 +201,7 @@ private fun TodayScreen(
             modifier = Modifier.fillMaxWidth().height(64.dp),
             shape = RoundedCornerShape(20.dp),
         ) {
-            Text("记录一次", style = MaterialTheme.typography.titleMedium)
+            Text("撸一次", style = MaterialTheme.typography.titleMedium)
         }
         Spacer(Modifier.height(12.dp))
         OutlinedButton(
@@ -211,11 +214,57 @@ private fun TodayScreen(
             Spacer(Modifier.width(8.dp))
             Text("撤销一次")
         }
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.weight(.55f))
         Text(
             "记录仅保存在这台设备上",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Composable
+private fun DeerDecoration(modifier: Modifier = Modifier) {
+    val lineColor = MaterialTheme.colorScheme.secondary
+    val detailColor = MaterialTheme.colorScheme.primary
+
+    Canvas(modifier = modifier) {
+        val stroke = size.minDimension * .045f
+        val centerX = size.width / 2f
+
+        // Face and ears.
+        drawOval(
+            color = lineColor,
+            topLeft = Offset(size.width * .31f, size.height * .30f),
+            size = androidx.compose.ui.geometry.Size(size.width * .38f, size.height * .52f),
+            style = Stroke(stroke),
+        )
+        drawLine(lineColor, Offset(size.width * .34f, size.height * .39f), Offset(size.width * .18f, size.height * .25f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .18f, size.height * .25f), Offset(size.width * .31f, size.height * .23f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .66f, size.height * .39f), Offset(size.width * .82f, size.height * .25f), stroke, StrokeCap.Round)
+        drawLine(lineColor, Offset(size.width * .82f, size.height * .25f), Offset(size.width * .69f, size.height * .23f), stroke, StrokeCap.Round)
+
+        // Simple antlers.
+        listOf(-1f, 1f).forEach { side ->
+            val rootX = centerX + side * size.width * .13f
+            val outerX = centerX + side * size.width * .28f
+            drawLine(lineColor, Offset(rootX, size.height * .31f), Offset(outerX, size.height * .08f), stroke, StrokeCap.Round)
+            drawLine(lineColor, Offset(centerX + side * size.width * .21f, size.height * .17f), Offset(centerX + side * size.width * .34f, size.height * .15f), stroke, StrokeCap.Round)
+            drawLine(lineColor, Offset(centerX + side * size.width * .25f, size.height * .12f), Offset(centerX + side * size.width * .27f, size.height * .02f), stroke, StrokeCap.Round)
+        }
+
+        // Eyes, muzzle and nose.
+        drawCircle(detailColor, radius = stroke * .55f, center = Offset(size.width * .42f, size.height * .52f))
+        drawCircle(detailColor, radius = stroke * .55f, center = Offset(size.width * .58f, size.height * .52f))
+        drawOval(
+            color = lineColor.copy(alpha = .18f),
+            topLeft = Offset(size.width * .39f, size.height * .60f),
+            size = androidx.compose.ui.geometry.Size(size.width * .22f, size.height * .15f),
+        )
+        drawOval(
+            color = detailColor,
+            topLeft = Offset(size.width * .45f, size.height * .64f),
+            size = androidx.compose.ui.geometry.Size(size.width * .10f, size.height * .06f),
         )
     }
 }
@@ -344,12 +393,29 @@ private fun CalendarDay(
         verticalArrangement = Arrangement.Center,
     ) {
         Text(date.dayOfMonth.toString(), color = alphaColor, fontWeight = if (isToday) FontWeight.Bold else null)
-        Text(
-            if (count > 0) "$count 次" else "—",
-            style = MaterialTheme.typography.labelSmall,
-            color = if (count > 0) MaterialTheme.colorScheme.secondary else alphaColor.copy(alpha = .45f),
-            maxLines = 1,
-        )
+        if (count > 0) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(7.dp))
+                    .background(MaterialTheme.colorScheme.tertiaryContainer)
+                    .padding(horizontal = 5.dp, vertical = 2.dp),
+            ) {
+                Text(
+                    "$count 次",
+                    fontSize = 13.sp,
+                    lineHeight = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = if (isFuture) alphaColor else MaterialTheme.colorScheme.onTertiaryContainer,
+                    maxLines = 1,
+                )
+            }
+        } else {
+            Text(
+                "—",
+                style = MaterialTheme.typography.labelMedium,
+                color = alphaColor.copy(alpha = .45f),
+            )
+        }
     }
 }
 
