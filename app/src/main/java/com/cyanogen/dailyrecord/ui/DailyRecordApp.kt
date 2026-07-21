@@ -1,5 +1,7 @@
 package com.cyanogen.dailyrecord.ui
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -60,7 +62,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -142,6 +143,10 @@ fun DailyRecordApp(viewModel: DailyRecordViewModel) {
             navController = navController,
             startDestination = Destination.Today.route,
             modifier = Modifier.padding(padding),
+            enterTransition = { EnterTransition.None },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { ExitTransition.None },
         ) {
             composable(Destination.Today.route) {
                 TodayScreen(
@@ -179,9 +184,7 @@ private fun TodayScreen(
     ) {
         Text("撸管记录", style = MaterialTheme.typography.headlineMedium, fontWeight = FontWeight.Bold)
         Text(today.format(dateFormatter), color = MaterialTheme.colorScheme.onSurfaceVariant)
-        Spacer(Modifier.weight(.45f))
-        DeerDecoration(Modifier.width(180.dp).height(112.dp))
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.weight(1f))
         Text("今日次数", style = MaterialTheme.typography.titleMedium)
         Text(
             text = count.toString(),
@@ -213,63 +216,12 @@ private fun TodayScreen(
             Spacer(Modifier.width(8.dp))
             Text("撤销一次")
         }
-        Spacer(Modifier.weight(.55f))
+        Spacer(Modifier.weight(1f))
         Text(
             "记录仅保存在这台设备上",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
-    }
-}
-
-@Composable
-private fun DeerDecoration(modifier: Modifier = Modifier) {
-    val lineColor = MaterialTheme.colorScheme.secondary
-    val detailColor = MaterialTheme.colorScheme.primary
-
-    Canvas(modifier = modifier) {
-        val stroke = size.minDimension * .035f
-
-        // Body, neck and head in side profile.
-        drawOval(
-            color = lineColor.copy(alpha = .13f),
-            topLeft = Offset(size.width * .12f, size.height * .40f),
-            size = androidx.compose.ui.geometry.Size(size.width * .50f, size.height * .32f),
-        )
-        drawOval(
-            color = lineColor,
-            topLeft = Offset(size.width * .12f, size.height * .40f),
-            size = androidx.compose.ui.geometry.Size(size.width * .50f, size.height * .32f),
-            style = Stroke(stroke),
-        )
-        drawLine(lineColor, Offset(size.width * .56f, size.height * .48f), Offset(size.width * .72f, size.height * .23f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .61f, size.height * .63f), Offset(size.width * .78f, size.height * .34f), stroke, StrokeCap.Round)
-        drawOval(
-            color = lineColor,
-            topLeft = Offset(size.width * .70f, size.height * .19f),
-            size = androidx.compose.ui.geometry.Size(size.width * .19f, size.height * .17f),
-            style = Stroke(stroke),
-        )
-        drawLine(lineColor, Offset(size.width * .87f, size.height * .25f), Offset(size.width * .97f, size.height * .29f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .97f, size.height * .29f), Offset(size.width * .87f, size.height * .33f), stroke, StrokeCap.Round)
-
-        // Ear, eye and branching antler.
-        drawLine(lineColor, Offset(size.width * .74f, size.height * .22f), Offset(size.width * .66f, size.height * .11f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .66f, size.height * .11f), Offset(size.width * .79f, size.height * .18f), stroke, StrokeCap.Round)
-        drawCircle(detailColor, radius = stroke * .62f, center = Offset(size.width * .83f, size.height * .26f))
-        drawLine(lineColor, Offset(size.width * .75f, size.height * .20f), Offset(size.width * .68f, size.height * .04f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .70f, size.height * .10f), Offset(size.width * .61f, size.height * .04f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .71f, size.height * .11f), Offset(size.width * .76f, size.height * .01f), stroke, StrokeCap.Round)
-
-        // Tail and four slender legs.
-        drawLine(lineColor, Offset(size.width * .14f, size.height * .48f), Offset(size.width * .04f, size.height * .37f), stroke, StrokeCap.Round)
-        drawLine(lineColor, Offset(size.width * .04f, size.height * .37f), Offset(size.width * .08f, size.height * .53f), stroke, StrokeCap.Round)
-        listOf(.24f, .35f, .51f, .59f).forEachIndexed { index, legX ->
-            val hoofX = legX + if (index % 2 == 0) -.035f else .035f
-            drawLine(lineColor, Offset(size.width * legX, size.height * .68f), Offset(size.width * legX, size.height * .86f), stroke, StrokeCap.Round)
-            drawLine(lineColor, Offset(size.width * legX, size.height * .86f), Offset(size.width * hoofX, size.height * .97f), stroke, StrokeCap.Round)
-            drawLine(lineColor, Offset(size.width * hoofX, size.height * .97f), Offset(size.width * (hoofX + .035f), size.height * .97f), stroke, StrokeCap.Round)
-        }
     }
 }
 
